@@ -11,7 +11,8 @@ exports.createProduct = async (req, res) => {
             price: req.body.price,
             stock:req.body.stock,
             sold: req.body.sold||0, 
-            description: req.body.description || null // Nếu không có mô tả, truyền null cho description
+            description: req.body.description || null, // Nếu không có mô tả, truyền null cho description
+            urlimg: req.body.urlimg || null, // Nếu không có ảnh, truyền null cho urlimg
         });
 
         // Lưu sản phẩm vào database
