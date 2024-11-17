@@ -13,4 +13,6 @@ router.put('/users/:id', userController.updateUser);
 // Định nghĩa route GET để lấy sản phẩm theo id
 router.get('/user/:id', userController.getUserById);
 router.post('/login', userController.login);
+router.post('/signup', userController.signup);
+router.post('/logout', userController.logout);
 module.exports = router;

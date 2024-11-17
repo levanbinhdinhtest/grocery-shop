@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const JWT_SECRET="f8D7LZj3H9fPziw3VuY0mWz6YB0mNbOlH9t1F8pJmNk";
 exports.createUser = async (req, res) => {
     try {
         const user = new User({     
@@ -111,28 +112,58 @@ exports.login = async function(req, res, next) {
       });
   
       // Trả về token và vai trò của người dùng
-      res.json({ token, role: user.role });
+      res.json({ token, role: user.role,id:user._id });
     } catch (e) {
       res.status(500).json({ message: "Internal server error" });
     }
 }
 exports.logout = async function (req, res) {
     try {
-      req.user.tokens = req.user.tokens.filter((token) => token.token!== req.token);
-      await req.user.save();
-      res.send();
-    } catch (e) {
-      res.status(500).send();
-    }
+        // Lấy token từ header Authorization
+        const token = req.header("Authorization")?.replace("Bearer ", "");
+    
+        if (!token) {
+          return res.status(400).send({ error: "Token is required for logout." });
+        }
+    
+        // Xác thực token
+        jwt.verify(token, JWT_SECRET, (err, decoded) => {
+          if (err) {
+            return res.status(401).send({ error: "Invalid token. Logout failed." });
+          }
+    
+          // Token hợp lệ, thực hiện logout
+          res.status(200).send({ message: "Successfully logged out." });
+        });
+      } catch (error) {
+        res.status(500).send({ error: "Logout failed." });
+      }
   
 }
-exports.signup = async function (req, res){
-    const {name, username, password} = req.body;
+exports.signup = async function (req, res) {
+    const { name, username, password } = req.body;
+
     try {
-      const user = await User.create({name, username, password});
-      res.json(user);
+        // Thêm các trường mặc định khi tạo người dùng mới
+        const user = await User.create({
+            name,
+            username,
+            password,
+            phone: "",       // Mặc định chuỗi rỗng
+            address: "",     // Mặc định chuỗi rỗng
+            email: "",      
+            urlimg: "https://5sfashion.vn/storage/upload/images/ckeditor/4KG2VgKFDJWqdtg4UMRqk5CnkJVoCpe5QMd20Pf7.jpg",      // Mặc định chuỗi rỗng
+            role: "client" // 
+        });
+
+        res.json(user);
     } catch (e) {
-      if(e.code === 11000) return res.status(400).send('Username already exists');
-      res.status(400).send(e.message)
+        // Kiểm tra lỗi nếu tên người dùng đã tồn tại
+        if (e.code === 11000) {
+            return res.status(400).send('Username already exists');
+        }
+
+        
+        res.status(400).send(e.message);
     }
-}
+};
