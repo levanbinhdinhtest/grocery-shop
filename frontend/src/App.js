@@ -22,7 +22,7 @@ import SingleShop from "./pages/store/SingleShop";
 import MyAccountSignIn from "./pages/Accounts/MyAccountSignIn";
 import MyAccountSignUp from "./pages/Accounts/MyAccountSignUp";
 import MyAccountView from "./pages/Accounts/MyAccountView";
-
+import ViewItem from "./ProductList/ViewItem"
 import { Provider } from "react-redux";
 import store from "./store/store";
 const App = () => {
@@ -42,9 +42,10 @@ const App = () => {
           {/* Accounts pages */}
           <Route path="/MyAccountSignIn" element={<MyAccountSignIn />} />
           <Route path="/MyAccountSignUp" element={<MyAccountSignUp />} />
-          <Route path="/MyAccountView/:id" element={<MyAccountView />} />
+          <Route path="/MyAccountView" element={<MyAccountView />} />
           {/* About pages */}
           <Route path="/AboutUs" element={<AboutUs />} />
+          <Route path="/ViewItem" element={<ViewItem />} />
         </Routes>
         <Footer/>
       </Router>

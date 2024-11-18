@@ -11,38 +11,33 @@ const Header = () => {
   // Lấy trạng thái `isLoggedIn` từ Redux store
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const idUser = localStorage.getItem("id");
-  // console.log(idUser);
+  console.log(idUser);
   // Khởi tạo `dispatch`
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Sử dụng useNavigate
   const handleLogout = async  () => {
     dispatch(logout()); // Gọi action logout để cập nhật Redux state
     localStorage.removeItem("id");
-    try {
       // Lấy token từ localStorage
       const token = localStorage.getItem("token");
       console.log(token);
       // Gửi yêu cầu logout đến API
-      await axios.post(
-        "http://localhost:5000/api/logout", // Địa chỉ endpoint logout
-        {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }
-      );
-  
-      // Xóa token khỏi localStorage
-      localStorage.removeItem("token");
-  
+      axios.post('http://localhost:5000/api/logout',{}, {
+            headers: {
+              'Authorization': "Bearer " + token,
+            },
+          })
+      .then((response)=>{
+          console.log(response);       
+          // Xóa token khỏi localStorage
+          localStorage.removeItem("token");
       // Cập nhật state Redux
-      dispatch(logout());
-    }
-    catch(error){
-      console.error(error);
-    }
-    
-    navigate("/MyAccountSignIn"); // Điều hướng đến trang login
+          dispatch(logout());     
+          navigate("/MyAccountSignIn"); // Điều hướng đến trang login
+      })
+      .catch((error) => {
+          console.error(error);
+      })
   };
 
   return (
@@ -87,7 +82,7 @@ const Header = () => {
               <li className="nav-item dmenu dropdown">
                 <Link
                   className="nav-link dropdown-toggle"
-                  to={"/MyAccountView/" + idUser}
+                  
                   id="navbarDropdown"
                   role="button"
                   data-toggle="dropdown"
@@ -99,12 +94,15 @@ const Header = () => {
                 <div className="dropdown-menu sm-menu" aria-labelledby="navbarDropdown">
                   {isLoggedIn ? (
                     <>
-                      <button className="dropdown-item" onClick={handleLogout}>
-                      Logout
-                    </button>
-                    <Link className="nav-link dropdown-item" to="/Shop">
+                    <Link className="nav-link dropdown-item" to="/ViewItem">
                       Cart
                     </Link>
+                    <Link className="nav-link dropdown-item" to="/MyAccountView">
+                      Profile
+                    </Link>
+                    <button className="dropdown-item" onClick={handleLogout}>
+                      Logout
+                    </button>
                     </>
 
                     

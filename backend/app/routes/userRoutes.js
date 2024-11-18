@@ -10,6 +10,7 @@ router.post('/users', userController.createUser);
 router.delete('/users/:id', userController.deleteUser);
 // Định nghĩa route PUT để update sản phẩm
 router.put('/users/:id', userController.updateUser);
+router.get('/user/me/:id', userController.getUserInfo);
 // Định nghĩa route GET để lấy sản phẩm theo id
 router.get('/user/:id', userController.getUserById);
 router.post('/login', userController.login);

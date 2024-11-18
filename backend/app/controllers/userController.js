@@ -53,7 +53,35 @@ exports.getUserById = async (req, res,next) => {
         );
     }
 }
+exports.getUserInfo = async (req, res,next) => {
+    try {
+        // Lấy token từ header Authorization
+        const token = req.header('Authorization')?.replace('Bearer ', '');
 
+        if (!token) {
+            return res.status(401).json({ error: "Authentication required" });
+        }
+
+        // Xác thực token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Lấy thông tin người dùng từ database
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Trả về thông tin người dùng
+        res.status(200).json({ user });
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: "Invalid or expired token" });
+        }
+
+        // Nếu xảy ra lỗi khác, gọi next để xử lý
+        return res.status(404).json(error);
+    }
+  };
 exports.updateUser = async (req, res,next) => {
     try {
         const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });

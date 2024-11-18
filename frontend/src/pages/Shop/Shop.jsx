@@ -28,6 +28,32 @@ useEffect(() => {
       setOpenDropdowns([...openDropdowns, index]);
     }
   };
+    // Handler function for product click
+    const handleProductClick = async (id) => {
+      const token = localStorage.getItem("token"); // Token người dùng
+      const userId = localStorage.getItem("id"); // ID người dùng
+  
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/cart/add",
+          {
+            userId,
+            productId: id,
+            quantity: 1,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        alert("Product added to cart!");
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error adding product to cart", error.response?.data || error.message);
+      }
+    };
 
      // loading
      const [loaderStatus, setLoaderStatus] = useState(true);
@@ -187,7 +213,7 @@ color="#0aad0a"
                 </div>
                 {/* btn */}
                 <div>
-                  <Link to="#!" className="btn btn-primary btn-sm">
+                  <Link to="#!" className="btn btn-primary btn-sm" onClick={() => handleProductClick(product._id)}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width={16}

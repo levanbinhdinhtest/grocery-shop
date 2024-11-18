@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const MyAccountView = () => {
-  const { id } = useParams(); // Lấy `id` từ URL
+  const idUser = localStorage.getItem("id");
+  console.log(idUser);
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -13,12 +14,17 @@ const MyAccountView = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  // Lấy token từ localStorage
+  const token = localStorage.getItem("token");
+  console.log(token);
   // Fetch dữ liệu người dùng
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`http://localhost:5000/api/user/${id}`)
+      .get(`http://localhost:5000/api/user/me/${idUser}`,{
+        headers: {
+          'Authorization': "Bearer " + token,
+        },})
       .then((response) => {
         console.log(response);
         setUserData(response.data.user);
@@ -28,7 +34,7 @@ const MyAccountView = () => {
         setError(error.response?.data?.message || "Error fetching user data");
         setIsLoading(false);
       });
-  }, [id]);
+  }, [idUser]);
 
   // Xử lý khi thay đổi các trường thông tin
   const handleChange = (e) => {
@@ -42,7 +48,7 @@ const MyAccountView = () => {
   // Xử lý lưu thông tin
   const handleSave = () => {
     axios
-      .put(`http://localhost:5000/api/users/${id}`, userData)
+      .put(`http://localhost:5000/api/users/${idUser}`, userData)
       .then((response) => {
         alert("User information updated successfully!");
       })

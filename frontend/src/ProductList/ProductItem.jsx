@@ -18,8 +18,30 @@ const ProductItem = () => {
   }, []);
 
   // Handler function for product click
-  const handleProductClick = (id) => {
-    console.log("Product ID:", id);
+  const handleProductClick = async (id) => {
+    const token = localStorage.getItem("token"); // Token người dùng
+    const userId = localStorage.getItem("id"); // ID người dùng
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/cart/add",
+        {
+          userId,
+          productId: id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Product added to cart!");
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error adding product to cart", error.response?.data || error.message);
+    }
   };
 
   return (
@@ -43,7 +65,7 @@ const ProductItem = () => {
               <div key={product.id} className="col fade-zoom">
                 <div
                   className="card card-product"
-                  onClick={() => handleProductClick(product._id)} // Gắn sự kiện click
+                  // Gắn sự kiện click
                   style={{ cursor: "pointer" }} // Tùy chọn: Thêm con trỏ để biểu thị có thể click
                 >
                   <div className="card-body">
@@ -109,7 +131,7 @@ const ProductItem = () => {
                         )}
                       </div>
                       <div>
-                        <Link to="#!" className="btn btn-primary btn-sm">
+                        <a className="btn btn-primary btn-sm" onClick={() => handleProductClick(product._id)} >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width={16}
@@ -126,7 +148,7 @@ const ProductItem = () => {
                             <line x1={5} y1={12} x2={19} y2={12} />
                           </svg>{" "}
                           Add
-                        </Link>
+                        </a>
                       </div>
                     </div>
                   </div>
