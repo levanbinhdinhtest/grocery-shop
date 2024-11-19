@@ -12,6 +12,7 @@ var logger = require('morgan');
 const productRoutes = require('./routes/productRoutes'); // Import productRoutes
 const userRoutes = require('./routes/userRoutes'); // Import userRoutes
 const cartRoutes = require('./routes/cartRoutes'); // Import userRoutes
+const paymentRoutes = require('./routes/paymentRoutes'); // Import userRoutes
 
 const connectDB = require('./connectdb');
 // Connect to the database
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', productRoutes); // Gán prefix "/api" cho các route
 app.use('/api', userRoutes); // Gán prefix "/api" cho các route
 app.use('/api', cartRoutes); // Gán prefix "/api" cho các route
+app.use('/api', paymentRoutes); // Gán prefix "/api" cho các route
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 app.use(function(req, res, next) {

@@ -67,6 +67,7 @@ exports.getCart = async (req, res) => {
         res.status(200).json({
             message: "Cart fetched successfully",
             cart: {
+                cartId: cart._id,
                 userId: cart.userId,
                 cartItems: cart.cartItems.map((item) => ({
                     productId: item.productId,
