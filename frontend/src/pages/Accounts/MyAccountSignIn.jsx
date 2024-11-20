@@ -30,7 +30,7 @@ const MyAccountSignIn = () => {
         console.log(token);
         dispatch(login());
         if (role === "employee") {
-          navigate("/Shop");
+          navigate("/admin/products");
         } else if (role === "client") {
           navigate("/Grocery-react/");
         } else {

@@ -1,12 +1,20 @@
-// react 
+// react
 import React from "react";
 // css
 import "./App.css";
-// browserrouter 
+// browserrouter
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // Components
-import Header from './Component/Header';
+import Header from "./Component/Header";
 import Footer from "./Component/Footer";
+import AdminSidebar from "./Component/AdminSidebar";
+
+import Product from "./Component/Product/Product";
+import CreateProduct from "./Component/Product/CreateProduct";
+import UpdateProduct from "./Component/Product/UpdateProduct";
+import User from "./Component/User/User";
+import CreateUser from "./Component/User/CreateUser";
+import UpdateUser from "./Component/User/UpdateUser";
 
 // pages
 import Home from "./pages/Home";
@@ -22,15 +30,14 @@ import SingleShop from "./pages/store/SingleShop";
 import MyAccountSignIn from "./pages/Accounts/MyAccountSignIn";
 import MyAccountSignUp from "./pages/Accounts/MyAccountSignUp";
 import MyAccountView from "./pages/Accounts/MyAccountView";
-import ViewItem from "./ProductList/ViewItem"
+import ViewItem from "./ProductList/ViewItem";
 import { Provider } from "react-redux";
 import store from "./store/store";
 const App = () => {
   return (
-    
     <Provider store={store}>
       <Router>
-        <Header/>
+        <Header />
         <Routes>
           <Route path="/Grocery-react/" element={<Home />} />
           {/* Shop pages */}
@@ -46,8 +53,29 @@ const App = () => {
           {/* About pages */}
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/ViewItem" element={<ViewItem />} />
+          <Route
+            path="/admin/*"
+            element={
+              <div style={{ display: "flex", height: "100vh" }}>
+                <AdminSidebar/>
+                <Routes>
+                  <Route path="products" element={<Product />} />
+                  <Route path="products/create" element={<CreateProduct />} />
+                  <Route path="products/update/:id" element={<UpdateProduct />} />
+                  <Route path="users" element={<User />} />
+                  <Route path="users/create" element={<CreateUser />} />
+                  <Route path="users/update/:id" element={<UpdateUser />} />
+                </Routes>
+              </div>
+            }
+          />
+          
         </Routes>
-        <Footer/>
+        <Footer />
+        <Routes>
+         
+        
+        </Routes>
       </Router>
     </Provider>
   );
