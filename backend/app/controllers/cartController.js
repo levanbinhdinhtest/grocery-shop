@@ -83,3 +83,32 @@ exports.getCart = async (req, res) => {
         res.status(500).json({ message: "Something went wrong", error });
     }
 }
+
+exports.deleteItemCart = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const { userId } = req.body;
+         // Tìm gio hàng của người dùng
+        // Tìm cart theo userId
+        let cart = await Cart.findOne({ userId });
+         if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+        // Xoá sản phẩm 
+        cart.cartItems = cart.cartItems.filter(
+            (item) => item.productId.toString()!== productId
+        );
+        // Cập nhật lại tong số tiền
+        cart.totalAmount = cart.cartItems.reduce(
+            (total, item) => total + item.totalPrice,
+            0
+        );
+        await cart.save();
+        res.status(200).json({ message: "Item deleted successfully", cart });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Something went wrong", error });
+    }
+
+}

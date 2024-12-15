@@ -63,6 +63,19 @@ const ViewItem = () => {
       console.error("Error paying:", error);
     }
 }
+const deleteProductFromCart = async (productId) => {
+  try {
+    const userId = localStorage.getItem("id");
+    const response = await axios.delete(`http://localhost:5000/api/cart/${productId}`, {
+      data: { userId }, // Dữ liệu được gửi trong body
+    });
+    alert("delete successful!");
+    window.location.reload(); // Reload trang sau khi thanh toán
+    console.log(response.data);
+  } catch (error) {
+    console.error(error.response?.data?.message || "Something went wrong");
+  }
+};
   if (!cart) {
     return <div className="loading">Loading...</div>;
   }
@@ -85,7 +98,9 @@ const ViewItem = () => {
               <p>Quantity: {item.quantity}</p>
               <p>Price: ${item.price}</p>
               <p>Total: ${item.totalPrice}</p>
+              <p>{item.productId}</p>
             </div>
+            <button className="btn btn-danger" onClick={()=>deleteProductFromCart(item.productId)} >Delete</button>
           </li>
         ))}
       </ul>
