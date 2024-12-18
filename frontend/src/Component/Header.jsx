@@ -10,34 +10,42 @@ import axios from "axios";
 const Header = () => {
   // Lấy trạng thái `isLoggedIn` từ Redux store
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const role = localStorage.getItem("role");
+  console.log(role);
   const idUser = localStorage.getItem("id");
   console.log(idUser);
   // Khởi tạo `dispatch`
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Sử dụng useNavigate
-  const handleLogout = async  () => {
+  const handleLogout = async () => {
     dispatch(logout()); // Gọi action logout để cập nhật Redux state
     localStorage.removeItem("id");
-      // Lấy token từ localStorage
-      const token = localStorage.getItem("token");
-      console.log(token);
-      // Gửi yêu cầu logout đến API
-      axios.post('http://localhost:5000/api/logout',{}, {
-            headers: {
-              'Authorization': "Bearer " + token,
-            },
-          })
-      .then((response)=>{
-          console.log(response);       
-          // Xóa token khỏi localStorage
-          localStorage.removeItem("token");
-      // Cập nhật state Redux
-          dispatch(logout());     
-          navigate("/MyAccountSignIn"); // Điều hướng đến trang login
+    // Lấy token từ localStorage
+    const token = localStorage.getItem("token");
+    console.log(token);
+    // Gửi yêu cầu logout đến API
+    axios
+      .post(
+        "http://localhost:5000/api/logout",
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        // Xóa token khỏi localStorage
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        // Cập nhật state Redux
+        dispatch(logout());
+        navigate("/MyAccountSignIn"); // Điều hướng đến trang login
       })
       .catch((error) => {
-          console.error(error);
-      })
+        console.error(error);
+      });
   };
 
   return (
@@ -54,35 +62,43 @@ const Header = () => {
 
           <div className="collapse navbar-collapse" id="mobile_nav">
             <ul className="navbar-nav navbar-light">
-              <li className="nav-item">
-                <Link className="nav-link" to="/Grocery-react/">
-                  Home
-                </Link>
-              </li>
+              {/* Ẩn Home khi role là employee */}
+              {role !== "employee" && (
+                <li className="nav-item">
+                  <Link className="nav-link" to="/Grocery-react/">
+                    Home
+                  </Link>
+                </li>
+              )}
+              {/* Ẩn About khi role là employee */}
+              {role !== "employee" && (
+                <li className="nav-item dmenu dropdown">
+                  <Link
+                    className="nav-link dropdown-toggle"
+                    to="/AboutUs"
+                    id="navbarDropdown"
+                    role="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    About
+                  </Link>
+                </li>
+              )}
+
+              {/* Ẩn mục Shop khi role là employee */}
+              {role !== "employee" && (
+                <li className="nav-item dmenu">
+                  <Link className="nav-link dropdown-toggle" to="/Shop">
+                    Shop
+                  </Link>
+                </li>
+              )}
+
               <li className="nav-item dmenu dropdown">
                 <Link
                   className="nav-link dropdown-toggle"
-                  to="/AboutUs"
-                  id="navbarDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  About
-                </Link>
-              </li>
-
-              <li className="nav-item dmenu ">
-                <Link className="nav-link dropdown-toggle" to="/Shop">
-                  Shop
-                </Link>
-              </li>
-
-              <li className="nav-item dmenu dropdown">
-                <Link
-                  className="nav-link dropdown-toggle"
-                  
                   id="navbarDropdown"
                   role="button"
                   data-toggle="dropdown"
@@ -91,21 +107,27 @@ const Header = () => {
                 >
                   Account
                 </Link>
-                <div className="dropdown-menu sm-menu" aria-labelledby="navbarDropdown">
+                <div
+                  className="dropdown-menu sm-menu"
+                  aria-labelledby="navbarDropdown"
+                >
                   {isLoggedIn ? (
                     <>
-                    <Link className="nav-link dropdown-item" to="/ViewItem">
-                      Cart
-                    </Link>
-                    <Link className="nav-link dropdown-item" to="/MyAccountView">
-                      Profile
-                    </Link>
-                    <button className="dropdown-item" onClick={handleLogout}>
-                      Logout
-                    </button>
+                      {role !== "employee" && (
+                        <Link className="nav-link dropdown-item" to="/ViewItem">
+                          Cart
+                        </Link>
+                      )}
+                      <Link
+                        className="nav-link dropdown-item"
+                        to="/MyAccountView"
+                      >
+                        Profile
+                      </Link>
+                      <button className="dropdown-item" onClick={handleLogout}>
+                        Logout
+                      </button>
                     </>
-
-                    
                   ) : (
                     <>
                       <Link className="dropdown-item" to="/MyAccountSignIn">

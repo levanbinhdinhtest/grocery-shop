@@ -98,7 +98,6 @@ const deleteProductFromCart = async (productId) => {
               <p>Quantity: {item.quantity}</p>
               <p>Price: ${item.price}</p>
               <p>Total: ${item.totalPrice}</p>
-              <p>{item.productId}</p>
             </div>
             <button className="btn btn-danger" onClick={()=>deleteProductFromCart(item.productId)} >Delete</button>
           </li>

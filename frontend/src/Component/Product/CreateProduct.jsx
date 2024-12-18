@@ -55,7 +55,8 @@ function CreateProduct() {
       setValidationMsg({
         api: "Đã xảy ra lỗi khi thêm sản phẩm. Vui lòng thử lại.",
       });
-      console.error(error);
+      setSuccessMsg("Lỗi khi tạo sản phẩm",error.response?.data);
+      console.error(error.response?.data);
     }
   };
 

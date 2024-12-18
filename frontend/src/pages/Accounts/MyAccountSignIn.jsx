@@ -30,8 +30,10 @@ const MyAccountSignIn = () => {
         console.log(token);
         dispatch(login());
         if (role === "employee") {
+          localStorage.setItem("role", "employee");
           navigate("/admin/products");
         } else if (role === "client") {
+          localStorage.setItem("role", "client");
           navigate("/Grocery-react/");
         } else {
           throw new Error("Unauthorized role");
